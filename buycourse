@@ -1,0 +1,172 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class buycourse {
+	public static int getcoursemoney(int id) {
+		List<String> coursemoneys = new ArrayList<String>();
+		
+		String filename = "C:\\Users\\DELL\\Desktop\\New folder\\courses.txt";
+		
+		String line = null;
+		
+		try {
+			FileReader fileReader = new FileReader(filename);
+			
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			
+			while((line = bufferedReader.readLine()) != null) {
+				//System.out.println(line);
+				coursemoneys.add(line);
+			}
+			
+			bufferedReader.close();
+		}
+		
+		catch(FileNotFoundException ex) {
+			System.out.println("Unable to read file");
+		}
+		
+		catch(IOException ex) {
+			System.out.println("Errors occurred when open file");
+
+		}
+		
+		String theid = Integer.toString(id); 
+		for(String coursesmoney: coursemoneys) {
+			String[] parts = coursesmoney.split(",");
+			if(parts[0].equals(theid)) {
+				return stn.stringtonum(parts[4]);
+			}
+		}
+		return 0;
+	}
+	public static void main(String[] args) {
+		int newmoney;
+		int level;
+		int money;
+		
+		List<String> courses = new ArrayList<String>();
+		String filename = "C:\\Users\\DELL\\Desktop\\New folder\\courses.txt";
+		
+		String line = null;
+		
+		try {
+			FileReader fileReader = new FileReader(filename);
+			
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			
+			while((line = bufferedReader.readLine()) != null) {
+				//System.out.println(line);
+				courses.add(line);
+			}
+			
+			bufferedReader.close();
+		}
+		
+		catch(FileNotFoundException ex) {
+			System.out.println("Unable to read file");
+		}
+		
+		catch(IOException ex) {
+			System.out.println("Errors occurred when open file");
+
+		}
+
+		String loginname;
+		String passwd;
+		Scanner input = new Scanner(System.in);
+		System.out.println("Username: ");
+		loginname = input.nextLine();
+		System.out.println("Password: ");
+		passwd = input.nextLine();
+		int id;
+		int idlevel;
+		
+		if(login.login(loginname, passwd)) {
+			System.out.println("Welcome back " + loginname);
+			System.out.println("Courses suitable for you: ");
+			level = login.getlevel(loginname);
+			money = login.getmoney(loginname);
+			for(String scourses: courses) {
+				String[] parts = scourses.split(",");
+				idlevel = stn.stringtonum(parts[3]);
+				if(level >= idlevel) {
+					System.out.println("Course's ID: " + parts[0]);
+					System.out.println("Course's Name: " + parts[1]);
+					System.out.println("Course's Teacher: " + parts[2]);
+					System.out.println("Course's Level: " + parts[3]);
+					System.out.println("Course's Price: " + parts[4]);
+					System.out.println("\n");
+				}
+			}
+			System.out.println("Enter the course's ID you want to buy: ");
+			id = input.nextInt();
+			input.close();
+			int coursemoney = buycourse.getcoursemoney(id);
+			if(updateline.updatemoney(loginname, coursemoney)) {
+				
+				List<String> listuser = new ArrayList<String>();
+				String afile = "C:\\Users\\DELL\\Desktop\\New folder\\test.txt";
+				
+				String aline = null;
+				
+				try {
+					FileReader fileReader = new FileReader(afile);
+					
+					BufferedReader bufferedReader = new BufferedReader(fileReader);
+					
+					while((aline = bufferedReader.readLine()) != null) {
+						//System.out.println(line);
+						listuser.add(aline);
+					}
+					
+					bufferedReader.close();
+				}
+				
+				catch(FileNotFoundException ex) {
+					System.out.println("Unable to read file");
+				}
+				
+				catch(IOException ex) {
+					System.out.println("Errors occurred when open file");
+
+				}
+				
+				newmoney = money - coursemoney;
+				String newermoney = Integer.toString(newmoney);
+				for(String user: listuser) {
+					String[] parts = null;
+					if (user != null && !user.trim().equals(","))
+					    parts = user.split(",");
+					try {
+						if(parts[0].equals(loginname)) {
+							deleteline util = new deleteline();
+					        util.removeLineFromFile("test.txt", user);
+					        String writetofile = parts[0] + "," + parts[1] + "," + parts[2] + "," + newermoney + ",0";
+					        	try {
+					        		BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\DELL\\Desktop\\New folder\\test.txt", true)); 
+					        		writer.newLine();
+					        		writer.write(writetofile);
+					        		writer.close();
+					        	}
+					        	catch (IOException e) {
+					        		System.out.println("An error has occurred!");
+					        	}
+							}
+						}
+						catch(NullPointerException ex) {}
+					}
+				
+					System.out.println("Your new balance is: " + newmoney);
+				}
+			}
+		}
+	//Lam file cho user biet courses da mua
+}
